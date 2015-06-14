@@ -18,7 +18,7 @@ echo "[GIVE ME ROOT PLEASE]"
 sudo echo "[GOT ROOT]"
 
 echo "[PREPARING DISK]"
-umount "$1"*
+sudo umount "$1"*
 
 echo "[PREPARING DISK]"
 sudo sfdisk $1 <<EOF
@@ -31,10 +31,10 @@ unit: sectors
 /dev/sdb4 : start=        0, size=        0, Id= 0
 EOF
 sudo mkfs.vfat -F 32 "$1"1
-sudo mount $1 $2
+sudo mount "$1"1 $2
 
 echo "[COPYING FILES]"
-sudo cp -a staging/* $2
+sudo cp -r staging/* $2
 sudo sync
 sudo umount $2
 echo "[DONE]"
