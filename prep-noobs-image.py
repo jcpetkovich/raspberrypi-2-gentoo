@@ -125,13 +125,14 @@ with open(OS_FILE, "w") as o:
     json.dump(os_json, o)
 
 shutil.copy("Gentoo.png", IMAGE_FILE)
-shutil.move(BOOT_PATH, "boot")
+subprocess.check_call("sudo mv {} {}".format(BOOT_PATH, "boot"), shell = True)
+subprocess.check_call("sudo mkdir -p {}".format(BOOT_PATH), shell = True)
 
-subprocess.check_output("tar cavf {archive} -C {path}".format(
+subprocess.check_output("sudo tar caf {archive} -C {path} .".format(
     archive = os.path.join(NOOBS_DIR, BOOT_TAR),
     path = "boot"
 ), shell = True)
-subprocess.check_output("tar cavf {archive} -C {path}".format(
+subprocess.check_output("sudo tar caf {archive} -C {path} .".format(
     archive = os.path.join(NOOBS_DIR, ROOT_TAR),
     path = ROOT_PATH
 ), shell = True)
