@@ -32,14 +32,31 @@ fi
 if [ ! -d staging/usr/portage ]; then
 
     echo "[SETTING UP ROOTFS (need root)]"
-    sudo tar xavf stage3-armv7a_hardfp-*.tar.bz2 -C staging
-    sudo tar xavf portage-latest.tar.bz2 -C staging/usr/
+    sudo tar xaf stage3-armv7a_hardfp-*.tar.bz2 -C staging
+    sudo tar xaf portage-latest.tar.bz2 -C staging/usr/
 else
     echo "  [SKIPPING BASIC ROOTFS SETUP]"
 fi
 
+echo "[INSTALLING FIRMWARE]"
+if [ ! -d staging/opt/vc ]; then
+    sudo cp -a firmware/boot/* staging/boot
+else
+    echo "  [SKIPPING FIRWMARE]"
+fi
+
+echo "[INSTALLING OPTIONAL SOFTWARE]"
+if [ ! -d staging/opt/vc ]; then
+    sudo cp -a firmware/hardfp/opt/vc staging/opt
+    sudo mkdir -p staging/usr/doc
+    sudo cp -a firmware/documentation staging/usr/doc/libraspberrypi-doc
+else
+    echo "  [SKIPPING OPTIONAL SOFTWARE]"
+fi
+
+
 echo "[BUILDING KERNEL]"
-if [ ! -f linux/arch/arm/boot/uImage ]; then
+if [ ! -f linux/arch/arm/boot/zImage ]; then
 
     pushd linux > /dev/null
     if [ ! -f .config ]; then
@@ -59,24 +76,10 @@ else
     echo "  [SKIPPING KERNEL]"
 fi
 
-echo "[INSTALLING FIRMWARE]"
-if [ ! -d staging/opt/vc ]; then
-    sudo cp -a firmware/boot/* staging/boot
-else
-    echo "  [SKIPPING FIRWMARE]"
-fi
-
-echo "[INSTALLING OPTIONAL SOFTWARE]"
-if [ ! -d staging/opt/vc ]; then
-    sudo cp -a firmware/hardfp/opt/vc staging/opt
-    sudo cp -a firmware/documentation staging/usr/doc/libraspberrypi-doc
-else
-    echo "  [SKIPPING OPTIONAL SOFTWARE]"
-fi
-
 echo "[BUILDING NOOBSOS]"
 if [ ! -d noobsos ]; then
     ./prep-noobs-image.py
+    sudo chown root:root -R noobsos
 else
     echo "  [SKIPPING BUILDING NOOBSOS]"
 fi
