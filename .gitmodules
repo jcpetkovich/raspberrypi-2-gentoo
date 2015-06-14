@@ -1,3 +1,6 @@
 [submodule "linux"]
 	path = linux
 	url = git@github.com:raspberrypi/linux.git
+[submodule "firmware"]
+	path = firmware
+	url = git@github.com:raspberrypi/firmware.git
