@@ -26,7 +26,7 @@ partitions_json = {
             "label":                        "boot",
             "filesystem_type":              "FAT",
             "partition_size_nominal":       100,
-            "want_maximised":               True,
+            "want_maximised":               False,
             "uncompressed_tarball_size":    26,
             "mkfs_options": "-F 32"
         },
