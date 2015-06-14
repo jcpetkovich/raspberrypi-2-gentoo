@@ -91,8 +91,8 @@ if not os.path.exists(NOOBS_DIR):
 
 # GET SIZES
 print("  {UPDATING METADATA}")
-boot = subprocess.check_output("du -s {path}".format(path = BOOT_PATH), shell = True).strip()
-root = subprocess.check_output("du -s {path}".format(path = ROOT_PATH), shell = True).strip()
+boot = subprocess.check_output("sudo du -s {path}".format(path = BOOT_PATH), shell = True).strip().split()[0]
+root = subprocess.check_output("sudo du -s {path}".format(path = ROOT_PATH), shell = True).strip().split()[0]
 
 BOOT_SIZE = int(boot) / 1024.0
 ROOT_SIZE = int(root) / 1024.0
