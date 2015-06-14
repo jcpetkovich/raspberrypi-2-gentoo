@@ -137,4 +137,7 @@ subprocess.check_output("sudo tar caf {archive} -C {path} .".format(
     path = ROOT_PATH
 ), shell = True)
 
+subprocess.check_call("sudo rmdir {}".format(BOOT_PATH), shell = True)
+subprocess.check_call("sudo mv {} {}".format("boot", BOOT_PATH), shell = True)
+
 print("  {NOOBS DONE}")
