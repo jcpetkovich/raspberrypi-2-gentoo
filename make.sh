@@ -73,7 +73,7 @@ fi
 
 echo "[INSTALLING KERNEL]"
 pushd linux > /dev/null
-sudo make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- INSTALL_MOD_PATH=../staging modules_install
+sudo make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- INSTALL_MOD_PATH=../staging modules_install > /dev/null
 popd > /dev/null
 sudo cp linux/arch/arm/boot/zImage staging/boot/kernel7.img
 
@@ -109,6 +109,32 @@ PKGDIR="${PORTDIR}/packages"
 MAKEOPTS="-j10 -l1"
 FEATURES="distcc"
 EOF
+
+cat <<EOF | sudo tee staging/boot/cmdline.txt > /dev/null
+ipv6.disable=1 avoid_safe_mode=1 selinux=0 plymouth.enable=0 smsc95xx.turbo_mode=N dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=@ROOT@ rootfstype=ext4 elevator=noop rootwait
+EOF
+
+echo "[CONFIGURING INITTAB]"
+if ! grep ttyAMA0 staging/etc/inittab > /dev/null 2>&1; then
+    sudo sed -i 's/9600 ttyS0/115200 ttyAMA0/' staging/etc/inittab
+fi
+
+echo "[SETTING UP INTERNET]"
+if ! grep dhcp staging/etc/conf.d/net > /dev/null 2>&1; then
+    cat <<EOF | sudo tee staging/etc/conf.d/net > /dev/null
+config_eth0="dhcp"
+EOF
+    pushd staging/etc/init.d > /dev/null
+    sudo ln -s net.lo net.eth0
+    popd
+
+    pushd staging/etc/runlevels/default > /dev/null
+    sudo ln -s /etc/init.d/net.eth0 net.eth0
+    sudo ln -s /etc/init.d/sshd     sshd
+    popd
+else
+    echo "  [SKIPPING INTERNET]"
+fi
 
 echo "[BUILDING NOOBSOS]"
 if [ ! -d noobsos ]; then
