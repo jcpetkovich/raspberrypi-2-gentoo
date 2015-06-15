@@ -77,6 +77,9 @@ sudo make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- INSTALL_MOD_PATH=../staging mo
 popd > /dev/null
 sudo cp linux/arch/arm/boot/zImage staging/boot/kernel7.img
 
+echo "[SETTING EMPTY ROOT PASSWORD (change asap)]"
+sudo sed -i "s/root:\*:/root::/" staging/etc/shadow
+
 echo "[CONFIGURING PORTAGE (never skips, need root)]"
 cat <<EOF | sudo tee staging/var/lib/portage/world > /dev/null
 app-misc/screen
