@@ -52,8 +52,7 @@ os_json = {
     "password":     "root"
 }
 
-partition_setup = """
-#!/bin/bash
+partition_setup = """#!/bin/bash
 
 # NOOBS partition setup script for Gentoo Linux ARM
 #  - part1 == boot partition (FAT), part2 == root partitions (ext4)
