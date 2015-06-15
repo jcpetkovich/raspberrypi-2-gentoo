@@ -84,7 +84,6 @@ app-portage/eix
 app-portage/genlop
 app-portage/gentoolkit
 app-portage/layman
-dev-embedded/u-boot-tools
 sys-apps/usbutils
 EOF
 
