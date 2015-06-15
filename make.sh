@@ -86,7 +86,6 @@ app-portage/gentoolkit
 app-portage/layman
 dev-embedded/u-boot-tools
 sys-apps/usbutils
-www-servers/apache
 EOF
 
 cat <<EOF | sudo tee staging/etc/portage/make.conf > /dev/null
