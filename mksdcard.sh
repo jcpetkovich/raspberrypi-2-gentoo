@@ -34,7 +34,7 @@ sudo mkfs.vfat -F 32 "$1"1
 sudo mount "$1"1 $2
 
 echo "[COPYING FILES]"
-sudo cp -r staging/* $2
+sudo cp -r sdcard/* $2
 sudo sync
 sudo umount $2
 echo "[DONE]"
