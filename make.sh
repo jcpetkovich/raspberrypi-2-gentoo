@@ -66,15 +66,50 @@ if [ ! -f linux/arch/arm/boot/zImage ]; then
     make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- menuconfig
     make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- -j5
     make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- -j5 modules
-
-    echo "[INSTALLING KERNEL]"
-    sudo make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- INSTALL_MOD_PATH=../staging modules_install
-    popd
-
-    sudo cp linux/arch/arm/boot/zImage staging/boot/kernel7.img
+    popd > /dev/null
 else
     echo "  [SKIPPING KERNEL]"
 fi
+
+echo "[INSTALLING KERNEL]"
+pushd linux > /dev/null
+sudo make ARCH=arm CROSS_COMPILE=${TARGET_CHOST}- INSTALL_MOD_PATH=../staging modules_install
+popd > /dev/null
+sudo cp linux/arch/arm/boot/zImage staging/boot/kernel7.img
+
+echo "[CONFIGURING PORTAGE (never skips, need root)]"
+cat <<EOF | sudo tee staging/var/lib/portage/world > /dev/null
+app-misc/screen
+app-portage/eix
+app-portage/genlop
+app-portage/gentoolkit
+app-portage/layman
+dev-embedded/u-boot-tools
+sys-apps/usbutils
+www-servers/apache
+EOF
+
+cat <<EOF | sudo tee staging/etc/portage/make.conf > /dev/null
+# CFLAGS Optimized for numerical computatins on the rpi2
+CFLAGS="-O2 -pipe -march=armv7-a -mfpu=vfp -mfloat-abi=hard -mcpu=cortex-a7 -mtune=cortex-a7"
+CXXFLAGS="${CFLAGS}"
+CHOST="armv7a-hardfloat-linux-gnueabi"
+
+# nss because of apache/nginx
+USE="bindist nss"
+
+# Decent Python targets
+PYTHON_TARGETS="$PYTHON_TARGETS python3_4"
+USE_PYTHON="2.7 3.3"
+
+PORTDIR="/usr/portage"
+DISTDIR="${PORTDIR}/distfiles"
+PKGDIR="${PORTDIR}/packages"
+
+# DISTCC, ADJUST FOR YOUR OWN NUM CORES
+MAKEOPTS="-j10 -l1"
+FEATURES="distcc"
+EOF
 
 echo "[BUILDING NOOBSOS]"
 if [ ! -d noobsos ]; then
