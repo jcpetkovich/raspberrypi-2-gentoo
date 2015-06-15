@@ -102,7 +102,7 @@ else
 fi
 
 echo "[INSTALLING NOOBSOS]"
-if [ ! sdcard/os/Gentoo ]; then
+if [ ! -d sdcard/os/Gentoo ]; then
     cp -a noobsos sdcard/os/Gentoo
 else
     echo "  [SKIPPING INSTALLING NOOBSOS]"
