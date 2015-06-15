@@ -126,12 +126,12 @@ config_eth0="dhcp"
 EOF
     pushd staging/etc/init.d > /dev/null
     sudo ln -s net.lo net.eth0
-    popd
+    popd > /dev/null
 
     pushd staging/etc/runlevels/default > /dev/null
     sudo ln -s /etc/init.d/net.eth0 net.eth0
     sudo ln -s /etc/init.d/sshd     sshd
-    popd
+    popd > /dev/null
 else
     echo "  [SKIPPING INTERNET]"
 fi
